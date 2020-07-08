@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>vue todolist !</title>
+	<style type="text/css">
+		.main{
+			text-align: center;
+			font-size: 16px;
+		}
+		.list li{
+			width: 200px;
+			margin: 10px auto;
+			text-align: left;
+			position: relative;
+			height: 40px;
+		}
+		.del{
+			position: absolute;
+			top: -4px;
+			right: 0;
+			color: #4472f5;
+			border: solid 1px #4472f5;
+			border-radius: 4px;
+			padding: 2px;
+		}
+		.list-enter-active, .list-leave-active {
+		  transition: all 1s;
+		}
+		.list-enter, .list-leave-to
+		/* .list-leave-active for below version 2.1.8 */ {
+		  opacity: 0;
+		  transform: translateY(30px);
+		}
+	</style>
+</head>
+<body>
+	<div id="app">
+		<div class="main">
+			<div class="header">
+				<div class="logo">todolist</div>
+				<input type="text" id="input" v-model="todo" @keydown.enter="add" placeholder="请输入待办事项" name="">
+			</div>
+			<div class="doing todo">
+				<h3>
+					<span class="title">正在进行</span>
+					<span class="doingNum">{{doingNum}}</span>
+				</h3>
+				<div class="list">
+					<transition-group name="list">
+						<li v-for="item,index in doingList" :key="item.id">
+							<input type="checkbox" @click="done(item.id)" name="">
+							<span>{{index}}</span>
+							{{item.name}}
+							<div class="del" @click="del(item.id)">删除</div>
+						</li>
+					</transition-group>
+				</div>
+			</div>
+			<div class="done todo">
+				<h3>
+					<span class="title">已完成</span>
+					<span class="doneNum">{{doneNum}}</span>
+				</h3>
+				<div class="list">
+					<transition-group name="list">
+						<li v-for="item,index in doneList" :key="item.id">
+							<input type="checkbox" @click="doing(item.id)" checked="checked" name="">
+							<span>{{index}}</span>
+							{{item.name}}
+							<div class="del" @click="del(item.id)">删除</div>
+						</li>
+					</transition-group>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	<script type="text/javascript">
+		var app = new Vue({
+			el:"#app",
+			data:{
+				todo:"",
+				todolist:[],
+				doingNum: 0,
+				doneNum:0
+			},
+			computed:{
+				doingList:function(){
+
+					let arr = this.todolist.filter(function(item,index){
+						return !item.isDone
+					})
+					return arr;
+				},
+				doneList:function(){
+					let arr = this.todolist.filter(function(item,index){
+						return item.isDone
+					})
+					return arr;
+				}
+			},
+			created(){
+				this.getLocalStorage();
+			},
+			methods:{
+				add(){
+					this.todolist.push({
+						name: this.todo,
+						isDone: false,
+						id: this.todolist.length
+					});
+					this.save();
+					this.todo = "";
+				},
+				save(){
+					let json = JSON.stringify(this.todolist);
+					localStorage.setItem("todo",json);
+				},
+				getLocalStorage(){
+					if(localStorage.getItem("todo")){
+						let data = localStorage.getItem("todo");
+						console.log(data);
+						let dataj = JSON.parse(data);
+						this.todolist = dataj;
+					}
+				},
+				done(index){
+					this.todolist[index].isDone = true;
+					this.save();
+				},
+				doing(index){
+					this.todolist[index].isDone = false;
+					this.save();
+				},
+				del(index){
+					console.log(index);
+					for(let i=0;i<this.todolist.length;i++){
+						if(this.todolist[i].id == i){
+							this.todolist.splice(i,1);
+						}
+					}
+					this.todolist.forEach((item,i)=>{
+						item.id = i;
+					})
+					this.save();
+				}
+			}
+		})
+	</script>
+</body>
+</html>
