@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>vue组件传值emit</title>
+</head>
+<body>
+	<div id="app">
+			<school v-for="item,index in schoolList" @cschool="change" :index="index" :product="item" :key="item.title+index"></school>
+			<h4>选择的大学是：{{chooseSchool}}</h4>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	<script type="text/javascript">
+		Vue.component("school",{
+			template:'<li><h3>{{index}}--学校名称：{{product.title}}</h3><button @click="choose(product.title)">选择学校</button></li>',
+			props:['product','index'],
+			data: function(){
+				return{
+					title: "三只松鼠",
+					price: "100",
+					brief: "官方旗舰店"
+				}
+			},
+			methods:{
+				choose(data){
+					this.$emit('cschool',data);
+				}
+			}
+		})
+		//根组件
+		let app = new Vue({
+			el:"#app",
+			data:{
+				chooseSchool:"",
+				schoolList:[{
+					title:"清华"
+				},
+				{
+					title:"北大"
+				},
+				{
+					title:"浙大"
+				}]
+			},
+			methods:{
+				change(data){
+					this.chooseSchool = data;
+				}
+			}
+		})
+	</script>
+</body>
+</html>
