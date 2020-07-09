@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>组件使用slot</title>
+</head>
+<body>
+	<div id="app">
+		<inputa v-model="username">
+			<p>我是插槽slot内容</p>
+		</inputa>
+		<h2>{{username}}</h2>
+
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	<script type="text/javascript">
+		Vue.component('inputa',{
+			template:`<div>
+			<input type="text" @input="$emit('input',$event.target.value)" name="">
+			<slot></slot>
+			</div>`
+		})
+
+		let app = new Vue({
+			el: '#app',
+			data:{
+				username:''
+			}
+		})
+	</script>
+</body>
+</html>
