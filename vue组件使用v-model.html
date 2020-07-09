@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>组件使用v-model</title>
+</head>
+<body>
+	<div id="app">
+		<inputa v-model="username"></inputa>
+		<h2>{{username}}</h2>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	<script type="text/javascript">
+		Vue.component('inputa',{
+			template:`<input type="text" @input="$emit('input',$event.target.value)" name="">`
+		})
+
+		let app = new Vue({
+			el: '#app',
+			data:{
+				username:''
+			}
+		})
+	</script>
+</body>
+</html>
