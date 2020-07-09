@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>组件传值</title>
+</head>
+<body>
+	<div id="app">
+			<product-action v-for="item,index in proList" :index="index" :product="item" :key="item.title+index"></product-action>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	<script type="text/javascript">
+		Vue.component("productAction",{
+			template:'<li><h3>{{index}}--产品名称：{{product.title}}</h3><h4>产品描述：{{product.brief}}</h4><p>产品价格：{{product.price}}</p></li>',
+			props:['product','index'],
+			data: function(){
+				return{
+					// title: "三只松鼠",
+					// price: "100",
+					// brief: "官方旗舰店"
+				}
+			}
+		})
+		//根组件
+		let app = new Vue({
+			el:"#app",
+			data:{
+				proList:[{
+					title:"产品1",
+					price:"10",
+					brief:"产品描述1"
+				},
+				{
+					title:"产品2",
+					price:"10",
+					brief:"产品描述1"
+				},
+				{
+					title:"产品3",
+					price:"10",
+					brief:"产品描述1"
+				}]
+			}
+		})
+	</script>
+</body>
+</html>

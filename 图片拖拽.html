@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>图片拖拽</title>
+	<style>
+		#box {
+			width: 100px;
+			height: 100px;
+			background-color: aquamarine;
+			position: absolute;
+		}
+		#text{
+			width: 100px;
+			height: 32px;
+			line-height: 32px;
+			position: absolute;
+		}
+		#father {
+			width: 600px;
+			height: 500px;
+			background-color: rgb(226, 117, 184);
+			position: relative;
+		}
+		img {
+			width: 100%;
+			height: 100%;
+			cursor: move;
+		}
+		#scale { 
+			width: 10px; 
+			height: 10px; 
+			overflow: hidden; 
+			cursor: se-resize; 
+			position: absolute; 
+			right: 0; 
+			bottom: 0; 
+			background-color: rgb(122, 191, 238); 
+		}
+	</style>
+</head>
+<body>
+	<div id="app">
+		<div id="father">
+			<input id="text" type="text" placeholder="单击此处添加标题" name="">
+			<div id="box">
+				<img :src= "img"/>
+				<div id="scale"></div>
+			</div>
+		</div>
+		<div class="updiv">
+            <input id="imgInput2" type="file" accept="image/*" class="upHeadBtn" @change="upHeadBtnStu" />
+            <button type="primary" class="upHeadBtna">添加图片</button>
+         </div>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	<script type="text/javascript">
+		let app = new Vue({
+			el: "#app",
+			data:{
+				isShow: true,
+				img: "http://img4.imgtn.bdimg.com/it/u=4245161611,1195625695&fm=27&gp=0.jpg"
+			},
+			methods:{
+				change(){
+					this.isShow = !this.isShow;
+				},
+				init(){
+					var box = document.getElementById("box");
+					var text = document.getElementById("text");
+			        var fa = document.getElementById('father');
+			        var scale = document.getElementById("scale");
+			        // 图片移动效果
+			        box.onmousedown=function(ev) {
+			            var oEvent = ev; 
+			            // 浏览器有一些图片的默认事件,这里要阻止
+			            oEvent.preventDefault();
+			            var disX = oEvent.clientX - box.offsetLeft;
+			            var disY = oEvent.clientY - box.offsetTop;
+			            fa.onmousemove=function (ev) {
+			                oEvent = ev;
+			                oEvent.preventDefault();
+			                var x = oEvent.clientX -disX;
+			                var y = oEvent.clientY -disY;
+
+			                // 图形移动的边界判断
+			                x = x <= 0 ? 0 : x;
+			                x = x >= fa.offsetWidth-box.offsetWidth ? fa.offsetWidth-box.offsetWidth : x;
+			                y = y <= 0 ? 0 : y;
+			                y = y >= fa.offsetHeight-box.offsetHeight ? fa.offsetHeight-box.offsetHeight : y;
+			                box.style.left = x + 'px';
+			                box.style.top = y + 'px';
+			            }
+			            // 图形移出父盒子取消移动事件,防止移动过快触发鼠标移出事件,导致鼠标弹起事件失效
+			            fa.onmouseleave = function () {
+			              fa.onmousemove=null;
+			              fa.onmouseup=null;
+			            }
+			            // 鼠标弹起后停止移动
+			            fa.onmouseup=function() {
+			               fa.onmousemove=null;
+			               fa.onmouseup=null;
+			            } 
+			        }
+			        text.onmousedown=function(ev) {
+			            var oEvent = ev; 
+			            // 浏览器有一些图片的默认事件,这里要阻止
+			            oEvent.preventDefault();
+			            var disX = oEvent.clientX - box.offsetLeft;
+			            var disY = oEvent.clientY - box.offsetTop;
+			            fa.onmousemove=function (ev) {
+			                oEvent = ev;
+			                oEvent.preventDefault();
+			                var x = oEvent.clientX -disX;
+			                var y = oEvent.clientY -disY;
+
+			                // 图形移动的边界判断
+			                x = x <= 0 ? 0 : x;
+			                x = x >= fa.offsetWidth-box.offsetWidth ? fa.offsetWidth-box.offsetWidth : x;
+			                y = y <= 0 ? 0 : y;
+			                y = y >= fa.offsetHeight-box.offsetHeight ? fa.offsetHeight-box.offsetHeight : y;
+			                text.style.left = x + 'px';
+			                text.style.top = y + 'px';
+			            }
+			            // 图形移出父盒子取消移动事件,防止移动过快触发鼠标移出事件,导致鼠标弹起事件失效
+			            fa.onmouseleave = function () {
+			              fa.onmousemove=null;
+			              fa.onmouseup=null;
+			            }
+			            // 鼠标弹起后停止移动
+			            fa.onmouseup=function() {
+			               fa.onmousemove=null;
+			               fa.onmouseup=null;
+			            } 
+			        }
+			        // 图片缩放效果
+			        scale.onmousedown = function (e) {
+			          // 阻止冒泡,避免缩放时触发移动事件
+			          e.stopPropagation();
+			          e.preventDefault();
+			          var pos = {
+			            'w': box.offsetWidth,
+			            'h': box.offsetHeight,
+			            'x': e.clientX,
+			            'y': e.clientY
+			          };
+			          fa.onmousemove = function (ev) {
+			            ev.preventDefault();
+			            // 设置图片的最小缩放为30*30
+			            var w = Math.max(30, ev.clientX - pos.x + pos.w)
+			            var h = Math.max(30,ev.clientY - pos.y + pos.h)
+			            // console.log(w,h)
+
+			            // 设置图片的最大宽高
+			            w = w >= fa.offsetWidth-box.offsetLeft ? fa.offsetWidth-box.offsetLeft : w
+			            h = h >= fa.offsetHeight-box.offsetTop ? fa.offsetHeight-box.offsetTop : h
+			            box.style.width = w + 'px';
+			            box.style.height = h + 'px';
+			            // console.log(box.offsetWidth,box.offsetHeight)
+			          }
+			          fa.onmouseleave = function () {
+			            fa.onmousemove=null;
+			            fa.onmouseup=null;
+			          }
+			          fa.onmouseup=function() {
+			            fa.onmousemove=null;
+			            fa.onmouseup=null;
+			          } 
+			        }
+				},
+			    upHeadBtnStu(e) {
+			      let that = this
+			      let file = e.target.files[0]
+			        if (file == undefined) {
+			          console.log('空')
+			        } else {
+			          let fileMaxSize = 150;
+			          let reader = new FileReader();
+			          reader.readAsDataURL(file);
+			          setTimeout(function() {
+			            that.img = reader.result
+			          }, 300)
+			        }
+			    },
+			},
+			beforeCreate(){
+				console.log("beforeCreate");
+			},
+			created(){
+				console.log("created");
+			},
+			beforeMount(){
+				console.log("beforeMounted");
+			},
+			mounted(){
+				console.log("mounted");
+				this.init();
+			}
+		});
+	</script>
+</body>
+</html>

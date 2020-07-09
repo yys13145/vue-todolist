@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>组件基础</title>
+</head>
+<body>
+	<div id="app">
+		<button @click="change">切换显示</button>
+		<hello-component v-if="isShow"></hello-component>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	<script type="text/javascript">
+
+		let helloComponent = Vue.component("hello-component",{
+			template:'<h1>{{header}}</h1>',
+			data:function(){
+				return {
+					header: "hello Vue component!"
+				}
+			}
+		})
+
+		let app = new Vue({
+			el: "#app",
+			data:{
+				isShow: true
+			},
+			methods:{
+				change(){
+					this.isShow = !this.isShow;
+				}
+			},
+			beforeCreate(){
+				console.log("beforeCreate");
+			},
+			created(){
+				console.log("created");
+			},
+			beforeMount(){
+				console.log("beforeMounted");
+			},
+			mounted(){
+				console.log("mounted");
+			},
+			beforeUpdate(){
+				console.log("beforeUpdate");
+			},
+			updated(){
+				console.log("updated");
+			},
+			beforeDestroy(){
+				console.log("beforeDestroy");
+			},
+			destroy(){
+				console.log("destroy");
+			}
+		});
+	</script>
+</body>
+</html>
